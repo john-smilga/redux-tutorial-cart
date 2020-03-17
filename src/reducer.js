@@ -11,7 +11,10 @@ function reducer(state, action) {
     console.log("you increased amount");
   }
   if (action.type === REMOVE) {
-    console.log("you remove amount");
+    return {
+      ...state,
+      cart: state.cart.filter(cartItem => cartItem.id !== action.payload.id)
+    };
   }
 
   return state;
