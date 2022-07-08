@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import clearCart from "../actions/clearCart";
+import total from "../actions/total";
 import CartItem from "./CartItem";
-import { connect } from "react-redux";
-import { CLEAR_CART, GET_TOTALS } from "../actions";
-const CartContainer = ({ cart = [], total, dispatch }) => {
-  React.useEffect(() => {
-    dispatch({ type: GET_TOTALS });
-  }, [cart, dispatch]);
+
+
+const CartContainer = () => {
+  const totalItems = useSelector((state) => state.total)
+  const cart = useSelector((state) => state.cart)
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(total())
+  }, [cart])
+
   if (cart.length === 0) {
     return (
       <section className="cart">
@@ -34,22 +41,15 @@ const CartContainer = ({ cart = [], total, dispatch }) => {
         <hr />
         <div className="cart-total">
           <h4>
-            total <span>${total}</span>
+            total <span>${totalItems}</span>
           </h4>
         </div>
-        <button
-          className="btn clear-btn"
-          onClick={() => dispatch({ type: CLEAR_CART })}
-        >
-          clear cart
-        </button>
+        <button className="btn clear-btn" onClick={() => {
+          dispatch(clearCart());
+        }}>clear cart</button>
       </footer>
     </section>
   );
 };
 
-function mapStateToProps(store) {
-  const { cart, total } = store;
-  return { cart, total };
-}
-export default connect(mapStateToProps)(CartContainer);
+export default CartContainer
